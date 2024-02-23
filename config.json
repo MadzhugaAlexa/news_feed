@@ -1,0 +1,8 @@
+{
+    "rss":[
+       "https://habr.com/ru/rss/hub/go/all/?fl=ru",
+       "https://news.rambler.ru/rss/novyy-god-2024/"
+    ],
+    "request_period": 5
+ }
+ 
