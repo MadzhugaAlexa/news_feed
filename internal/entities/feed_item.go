@@ -22,6 +22,14 @@ type Item struct {
 	CreatedAt   time.Time
 }
 
+type Post struct {
+	ID      int
+	Title   string
+	Content string
+	PubDate int64
+	Link    string
+}
+
 type RSS struct {
 	Channel RSSChannel `xml:"channel"`
 }

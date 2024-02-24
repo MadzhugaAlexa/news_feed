@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 	"news_feed/internal/entities"
 	"time"
 
@@ -30,10 +31,22 @@ func (r *Repo) AddItem(item entities.Item) error {
 	sql := `INSERT INTO news(guid, title, link, pdalink,description,pubDate,category,author, created_at) 
 	values($1, $2, $3, $4, $5, $6, $7, $8, $9) `
 
+	putDate, err := time.Parse(time.RFC1123, item.PubDate)
+	if err != nil {
+		putDate, err = time.Parse(time.RFC1123Z, item.PubDate)
+		if err != nil {
+			putDate, err = time.Parse("Mon, 2 Jan 2006 15:04:05 -0700", item.PubDate)
+			if err != nil {
+				log.Fatalf("failed to parse data %#v\n", item)
+			}
+
+		}
+	}
+
 	t, err := tx.Exec(
 		context.Background(),
 		sql,
-		item.GUID, item.Title, item.Link, item.PdaLink, item.Description, item.PubDate,
+		item.GUID, item.Title, item.Link, item.PdaLink, item.Description, putDate.Unix(),
 		item.Category, item.Author, item.CreatedAt,
 	)
 
@@ -48,21 +61,20 @@ func (r *Repo) AddItem(item entities.Item) error {
 
 	return nil
 }
-func (r *Repo) ReadItems() ([]entities.Item, error) {
-	items := make([]entities.Item, 0)
+func (r *Repo) ReadItems(limit int) ([]entities.Post, error) {
+	items := make([]entities.Post, 0)
 
-	rows, err := r.db.Query(context.Background(), "select * from news;")
+	rows, err := r.db.Query(context.Background(), "select id, title, link, description, pubdate from news order by created_at desc limit $1", limit)
 
 	if err != nil {
 		return nil, err
 	}
 
 	for rows.Next() {
-		item := entities.Item{}
+		item := entities.Post{}
 
 		err = rows.Scan(
-			&item.GUID, &item.Title, &item.Link, &item.PdaLink, &item.Description, &item.PubDate,
-			&item.Category, &item.Author, &item.CreatedAt,
+			&item.ID, &item.Title, &item.Link, &item.Content, &item.PubDate,
 		)
 		if err != nil {
 			return nil, err

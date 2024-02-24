@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"news_feed/internal/config"
 	"news_feed/internal/entities"
@@ -41,13 +40,15 @@ func main() {
 	go func(ch chan entities.Item) {
 		for {
 			item := <-ch
-			fmt.Println("storing item")
 			repo.AddItem(item)
 		}
 	}(ch)
 
 	e := echo.New()
 	h := handler.NewHandler(repo)
-	e.GET("/items", h.GetItems)
-	e.Logger.Fatal(e.Start(":8080"))
+	e.GET("/news/", h.GetItems)
+	e.GET("/news/:limit", h.GetItems)
+	e.File("/", "./webapp/index.html")
+	e.Static("/", "./webapp/")
+	e.Logger.Fatal(e.Start(":80"))
 }

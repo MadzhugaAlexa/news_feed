@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"log"
 	"net/http"
 	"news_feed/internal/repo"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
@@ -18,8 +20,23 @@ func NewHandler(r *repo.Repo) Handler {
 }
 
 func (h *Handler) GetItems(c echo.Context) error {
-	items, err := h.repo.ReadItems()
+	l := c.Param("limit")
+
+	var limit int
+	var err error
+	if l == "" {
+		limit = 10
+	} else {
+		limit, err = strconv.Atoi(l)
+		if err != nil {
+			return err
+		}
+	}
+
+	items, err := h.repo.ReadItems(limit)
 	if err != nil {
+		log.Printf("failed with %#v\n", err)
+
 		return err
 	}
 
