@@ -1,7 +1,5 @@
 package entities
 
-import "time"
-
 type RSSChannel struct {
 	Title       string `xml:"title"`
 	Link        string `xml:"link"`
@@ -19,17 +17,20 @@ type Item struct {
 	PubDate     string `xml:"pubDate"`
 	Category    string `xml:"category"`
 	Author      string `xml:"author"`
-	CreatedAt   time.Time
 }
 
 type Post struct {
 	ID      int
 	Title   string
+	Link    string
 	Content string
 	PubDate int64
-	Link    string
 }
 
 type RSS struct {
 	Channel RSSChannel `xml:"channel"`
+}
+
+type Error struct {
+	Error error
 }

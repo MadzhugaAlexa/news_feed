@@ -3,12 +3,9 @@ package main
 import (
 	"context"
 	"log"
-	"news_feed/internal/config"
-	"news_feed/internal/entities"
 	"news_feed/internal/feed"
 	"news_feed/internal/handler"
 	"news_feed/internal/repo"
-	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/labstack/echo/v4"
@@ -25,24 +22,7 @@ func main() {
 
 	repo := repo.NewRepo(db)
 
-	cfg := config.LoadConfig()
-	ch := make(chan entities.Item)
-
-	for _, rss := range cfg.RSS {
-		ticker := time.NewTicker(time.Duration(cfg.RequestPeriod) * time.Second)
-		go func(rss string) {
-			for range ticker.C {
-				feed.Read(rss, ch)
-			}
-		}(rss)
-	}
-
-	go func(ch chan entities.Item) {
-		for {
-			item := <-ch
-			repo.AddItem(item)
-		}
-	}(ch)
+	feed.FeatchFeeds(repo)
 
 	e := echo.New()
 	h := handler.NewHandler(repo)

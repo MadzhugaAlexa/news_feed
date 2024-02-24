@@ -1,14 +1,9 @@
-DROP TABLE news;
+DROP TABLE IF EXISTS posts;
 
-CREATE TABLE News(
-	ID serial primary key,
-    GUID        varchar(250) NOT NULL,
-	Title       varchar(200) NOT NULL,
-	Link        varchar(400) NOT NULL,
-	PdaLink     varchar(400) NOT NULL,
-	Description text NOT NULL,
-	PubDate     bigint,
-	Category    varchar(100) NOT NULL,
-	Author      varchar(100) NOT NULL,
-    Created_At   TIMESTAMP
+CREATE TABLE posts(
+	ID          SERIAL PRIMARY KEY,
+	Title       TEXT NOT NULL,
+	Link        TEXT NOT NULL UNIQUE,
+	Content     TEXT NOT NULL,
+	PubDate     BIGINT DEFAULT 0
 );
