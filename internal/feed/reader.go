@@ -37,7 +37,7 @@ func Read(url string, out chan<- entities.Item, ech chan<- entities.Error) {
 }
 
 func FeatchFeeds(repo *repo.Repo) {
-	cfg := config.LoadConfig()
+	cfg := config.LoadConfig("./config.json")
 	ch := make(chan entities.Item)
 	ech := make(chan entities.Error)
 

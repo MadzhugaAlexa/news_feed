@@ -3,17 +3,21 @@ package handler
 import (
 	"log"
 	"net/http"
-	"news_feed/internal/repo"
+	"news_feed/internal/entities"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
 
 type Handler struct {
-	repo *repo.Repo
+	repo ItemsReader
 }
 
-func NewHandler(r *repo.Repo) Handler {
+type ItemsReader interface {
+	ReadItems(int) ([]entities.Post, error)
+}
+
+func NewHandler(r ItemsReader) Handler {
 	return Handler{
 		repo: r,
 	}

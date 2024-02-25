@@ -12,8 +12,8 @@ type Config struct {
 	RSS           []string `json:"rss"`
 }
 
-func LoadConfig() Config {
-	file, err := os.Open("./config.json")
+func LoadConfig(path string) Config {
+	file, err := os.Open(path)
 	if err != nil {
 		log.Fatal("failed to open config")
 	}

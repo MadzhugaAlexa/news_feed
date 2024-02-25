@@ -77,7 +77,8 @@ func (r *Repo) AddItem(item entities.Item) error {
 func (r *Repo) ReadItems(limit int) ([]entities.Post, error) {
 	items := make([]entities.Post, 0)
 
-	rows, err := r.db.Query(context.Background(), "select id, title, link, content, pubdate from posts order by pubdate desc limit $1", limit)
+	sql := "select id, title, link, content, pubdate from posts order by pubdate desc limit $1"
+	rows, err := r.db.Query(context.Background(), sql, limit)
 
 	if err != nil {
 		return nil, err
