@@ -23,6 +23,8 @@ func NewRepo(db *pgxpool.Pool) *Repo {
 
 var errFailedToSave = errors.New("failed to save")
 
+// AddItem проверяет, есть ли указанная новость в БД и если нет -
+// сохраняет ее
 func (r *Repo) AddItem(item entities.Item) error {
 	tx, _ := r.db.Begin(context.Background())
 	defer tx.Commit(context.Background())
@@ -74,6 +76,8 @@ func (r *Repo) AddItem(item entities.Item) error {
 
 	return nil
 }
+
+// ReadItems читает новостные посты из БД и возвращет их слайс.
 func (r *Repo) ReadItems(limit int) ([]entities.Post, error) {
 	items := make([]entities.Post, 0)
 

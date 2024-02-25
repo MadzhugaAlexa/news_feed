@@ -23,6 +23,8 @@ func NewHandler(r ItemsReader) Handler {
 	}
 }
 
+// GetItems обрабатывает запрос на /news и возвращает N последних новостей
+// По умолчанию N = 10
 func (h *Handler) GetItems(c echo.Context) error {
 	l := c.Param("limit")
 

@@ -12,6 +12,8 @@ type Config struct {
 	RSS           []string `json:"rss"`
 }
 
+// LoadConfig читает конфигурацию из файла config.json и загружает из нее
+// список каналов RSS ыи период перезагрузки данных из каналаы
 func LoadConfig(path string) Config {
 	file, err := os.Open(path)
 	if err != nil {

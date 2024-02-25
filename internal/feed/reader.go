@@ -11,6 +11,8 @@ import (
 	"time"
 )
 
+// Read загружает RSS-новости для заданного URL-а и пишет их в out канал.
+// Если возникли ошибки - они пишутся в ech канал
 func Read(url string, out chan<- entities.Item, ech chan<- entities.Error) {
 	response, err := http.Get(url)
 	if err != nil {
@@ -36,6 +38,7 @@ func Read(url string, out chan<- entities.Item, ech chan<- entities.Error) {
 	}
 }
 
+// Функция FeatchFeeds читает новости из RSS каналов и пишет их в БД.
 func FeatchFeeds(repo *repo.Repo) {
 	cfg := config.LoadConfig("./config.json")
 	ch := make(chan entities.Item)
