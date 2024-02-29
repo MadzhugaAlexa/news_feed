@@ -21,7 +21,7 @@ func NewRepo(db *pgxpool.Pool) *Repo {
 	}
 }
 
-var errFailedToSave = errors.New("failed to save")
+var errFailedToSave = errors.New("не удалось сохранить")
 
 // AddItem проверяет, есть ли указанная новость в БД и если нет -
 // создает ее

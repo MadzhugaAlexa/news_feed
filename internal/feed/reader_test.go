@@ -53,8 +53,8 @@ func TestFetchFeeds(t *testing.T) {
 	go FeatchFeeds(cfg, reader, repo)
 
 	time.Sleep(110 * time.Millisecond)
-	fmt.Printf("новости: %#v\n", repo.Items)
+	fmt.Printf("Hовости: %#v\n", repo.Items)
 	if len(repo.Items) != 1 {
-		t.Fatal("должны быть новости")
+		t.Fatal("Должны быть новости")
 	}
 }

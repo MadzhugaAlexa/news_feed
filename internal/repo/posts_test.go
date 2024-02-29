@@ -61,7 +61,7 @@ func TestAddItem(t *testing.T) {
 	row = db.QueryRow(context.Background(), "select count(*) from posts where title = 'test title'")
 	cnt := 0
 	if row.Scan(&cnt); cnt != 1 {
-		t.Fatal("created record duplicate")
+		t.Fatal("Существует дубликат новости")
 	}
 }
 
@@ -85,6 +85,6 @@ func TestReadItems(t *testing.T) {
 	}
 
 	if len(items) != 1 {
-		t.Fatal("Прочитали не одну запись", len(items))
+		t.Fatal("Прочитали не одну новость", len(items))
 	}
 }
