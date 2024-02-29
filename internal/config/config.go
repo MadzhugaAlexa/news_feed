@@ -5,11 +5,13 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"time"
 )
 
 type Config struct {
 	RequestPeriod int      `json:"request_period"`
 	RSS           []string `json:"rss"`
+	Duration      time.Duration
 }
 
 // LoadConfig читает конфигурацию из файла config.json и загружает из нее
@@ -29,5 +31,6 @@ func LoadConfig(path string) Config {
 		log.Fatal("Не смогли загрузить config")
 	}
 
+	cfg.Duration = time.Minute
 	return cfg
 }

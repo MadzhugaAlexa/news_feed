@@ -7,20 +7,16 @@ import (
 	"net/http"
 	"news_feed/internal/config"
 	"news_feed/internal/entities"
-	"news_feed/internal/repo"
 	"time"
 )
 
+type FeedReader func(string) ([]byte, error)
+
 // Read загружает RSS-новости для заданного URL-а и пишет их в out канал.
 // Если возникли ошибки - они пишутся в ech канал
-func Read(url string, out chan<- entities.Item, ech chan<- entities.Error) {
-	response, err := http.Get(url)
-	if err != nil {
-		ech <- entities.Error{Error: err}
-		return
-	}
+func read(reader FeedReader, url string, out chan<- entities.Item, ech chan<- entities.Error) {
+	body, err := reader(url)
 
-	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		ech <- entities.Error{Error: err}
 		return
@@ -38,17 +34,22 @@ func Read(url string, out chan<- entities.Item, ech chan<- entities.Error) {
 	}
 }
 
+type RepoInterface interface {
+	AddItem(item entities.Item) error
+	ReadItems(limit int) ([]entities.Post, error)
+}
+
 // Функция FeatchFeeds читает новости из RSS каналов и пишет их в БД.
-func FeatchFeeds(repo *repo.Repo) {
-	cfg := config.LoadConfig("./config.json")
+func FeatchFeeds(cfg config.Config, reader FeedReader, repo RepoInterface) {
+
 	ch := make(chan entities.Item)
 	ech := make(chan entities.Error)
 
 	for _, rss := range cfg.RSS {
-		ticker := time.NewTicker(time.Duration(cfg.RequestPeriod) * time.Second)
+		ticker := time.NewTicker(time.Duration(cfg.RequestPeriod) * cfg.Duration)
 		go func(rss string) {
 			for range ticker.C {
-				Read(rss, ch, ech)
+				read(reader, rss, ch, ech)
 			}
 		}(rss)
 	}
@@ -66,4 +67,19 @@ func FeatchFeeds(repo *repo.Repo) {
 			log.Printf("Ошибка: %v\n", err)
 		}
 	}(ech)
+}
+
+// Функция LoadFeed отправляет запрос по сети по заданному URL и возвращает ответ или ошибку
+func LoadFeed(url string) ([]byte, error) {
+	response, err := http.Get(url)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	body, err := io.ReadAll(response.Body)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return body, nil
 }

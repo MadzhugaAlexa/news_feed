@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"news_feed/internal/config"
 	"news_feed/internal/feed"
 	"news_feed/internal/handler"
 	"news_feed/internal/repo"
@@ -21,8 +22,8 @@ func main() {
 	defer db.Close()
 
 	repo := repo.NewRepo(db)
-
-	feed.FeatchFeeds(repo)
+	cfg := config.LoadConfig("./config.json")
+	feed.FeatchFeeds(cfg, feed.LoadFeed, repo)
 
 	e := echo.New()
 	h := handler.NewHandler(repo)

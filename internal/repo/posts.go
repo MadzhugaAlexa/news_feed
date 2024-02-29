@@ -24,7 +24,7 @@ func NewRepo(db *pgxpool.Pool) *Repo {
 var errFailedToSave = errors.New("failed to save")
 
 // AddItem проверяет, есть ли указанная новость в БД и если нет -
-// сохраняет ее
+// создает ее
 func (r *Repo) AddItem(item entities.Item) error {
 	tx, err := r.db.Begin(context.Background())
 	if err != nil {
