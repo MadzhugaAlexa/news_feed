@@ -17,7 +17,7 @@ type Config struct {
 func LoadConfig(path string) Config {
 	file, err := os.Open(path)
 	if err != nil {
-		log.Fatal("failed to open config")
+		log.Fatal("Не смогли открыть config.json")
 	}
 	defer file.Close()
 
@@ -26,7 +26,7 @@ func LoadConfig(path string) Config {
 	cfg := Config{}
 	err = json.Unmarshal(data, &cfg)
 	if err != nil {
-		log.Fatal("failed to load config")
+		log.Fatal("Не смогли загрузить config")
 	}
 
 	return cfg

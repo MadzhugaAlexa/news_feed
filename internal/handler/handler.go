@@ -41,7 +41,7 @@ func (h *Handler) GetItems(c echo.Context) error {
 
 	items, err := h.repo.ReadItems(limit)
 	if err != nil {
-		log.Printf("failed with %#v\n", err)
+		log.Printf("Ошибка %#v\n", err)
 
 		return err
 	}

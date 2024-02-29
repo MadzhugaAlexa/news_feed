@@ -26,16 +26,22 @@ var errFailedToSave = errors.New("failed to save")
 // AddItem проверяет, есть ли указанная новость в БД и если нет -
 // сохраняет ее
 func (r *Repo) AddItem(item entities.Item) error {
-	tx, _ := r.db.Begin(context.Background())
-	defer tx.Commit(context.Background())
+	tx, err := r.db.Begin(context.Background())
+	if err != nil {
+		return err
+	}
+	defer func() {
+		tx.Commit(context.Background())
+	}()
 
 	row := tx.QueryRow(
 		context.Background(),
-		"select exists(select 1 from posts where link = $1);", item.Link,
+		"select exists(select 1 from posts where link = $1);",
+		item.Link,
 	)
 
 	var exists bool
-	err := row.Scan(&exists)
+	err = row.Scan(&exists)
 	if err != nil {
 		fmt.Printf("Ошибка: %#v\n", err)
 	}
@@ -53,7 +59,7 @@ func (r *Repo) AddItem(item entities.Item) error {
 		if err != nil {
 			putDate, err = time.Parse("Mon, 2 Jan 2006 15:04:05 -0700", item.PubDate)
 			if err != nil {
-				log.Fatalf("failed to parse date %#v\n", item)
+				log.Fatalf("Ошибка даты %#v\n", item)
 			}
 
 		}

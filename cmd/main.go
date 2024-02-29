@@ -16,7 +16,7 @@ func main() {
 
 	db, err := pgxpool.New(context.Background(), DB_URL)
 	if err != nil {
-		log.Fatalf("failed to connect to db: %v\n", err)
+		log.Fatalf("Не смогли подключиться к БД: %v\n", err)
 	}
 	defer db.Close()
 
